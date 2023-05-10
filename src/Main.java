@@ -4,6 +4,8 @@ import java.util.Objects;
 public class Main {
     static ViewStudents view = new ViewStudents();
     static Register register = new Register();
+    static Update update = new Update();
+    static Delete delete = new Delete();
     static DatabaseConnection connection = new DatabaseConnection();
 
     public static void main(String[] args) {
@@ -19,13 +21,19 @@ public class Main {
             System.out.print("\033[38;5;208m" + " | " + "\033[0m"); // Make the middle | orange
             System.out.print("\033[38;5;33m" + "Register" + "\033[0m"); // Make the option blue
             System.out.print("\033[38;5;208m" + " | " + "\033[0m"); // Make the right | orange
-            System.out.print("\033[38;5;33m" + "Exit" + "\033[0m"); // Make the option blue
+            System.out.print("\033[38;5;33m" + "Update" + "\033[0m"); // Make the option blue
+            System.out.print("\033[38;5;208m" + " | " + "\033[0m"); // Make the right | orange
+            System.out.print("\033[38;5;33m" + "Delete" + "\033[0m"); // Make the option blue
+            System.out.print("\033[38;5;208m" + " | " + "\033[0m"); // Make the right | orange
+             System.out.print("\033[38;5;33m" + "Exit" + "\033[0m"); // Make the option blue
             System.out.print("\033[38;5;208m" + " | " + "\033[0m"); // Make the right | orange
             System.out.println();
             choice = scanner.next().toLowerCase();
             switch (choice) {
                 case "view" -> view.View();
                 case "register"-> register.RegisterTeam();
+                case "update" -> update.UpdateInformation();
+                case "delete" -> delete.DeleteInformation();
                 case "exit" -> {
                     System.out.print("\033[38;5;208m" + "Exiting Program" + "\033[0m");
                     for (int i = 0; i < 3; i++) {
