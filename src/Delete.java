@@ -8,17 +8,20 @@ public class Delete {
         try (Connection conn = DatabaseConnection.getConnection()) { // Get a connection to the database
             Scanner scanner = new Scanner(System.in); //Create a scanner object to read user input
             System.out.println("What do you want to delete?"); // prints the message "What do you want to delete?" to the console.
-            System.out.println("1. Student"); //represents a menu option for deleting a student.
-            System.out.println("2. Team"); //represents a menu option for deleting a student.
-            System.out.print("Enter your choice: "); // prints the message "Enter your choice: " prompting the user to enter their choice.
-            int choice = scanner.nextInt(); //expect the user to enter an integer (a whole number) as input.
-            scanner.nextLine(); // Consume the newline character
+            System.out.print("\033[38;5;208m" + " | " + "\033[0m");
+            System.out.print("\033[38;5;33m" + "Student" + "\033[0m"); //represents a menu option for deleting a student.
+            System.out.print("\033[38;5;208m" + " | " + "\033[0m");
+            System.out.print("\033[38;5;33m" + "Team" + "\033[0m"); //represents a menu option for deleting a team.
+            System.out.print("\033[38;5;208m" + " | " + "\033[0m");
+            System.out.println(); // Consume the newline character
+
+            String choice = scanner.nextLine().toLowerCase(); // Read user input as a string and convert to lowercase
 
             switch (choice) {
-                case 1:
+                case "student":
                     deleteStudent(conn, scanner); //This method handles the deletion of a student.
                     break; // the "break" statement is used within a switch statement to immediately exit the switch block and continue executing the code after the switch block.
-                case 2:
+                case "team":
                     deleteTeam(conn, scanner); //This method handles the deletion of a team.
                     break;
                 default:
@@ -29,6 +32,7 @@ public class Delete {
             conn.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+
         }
     }
 
