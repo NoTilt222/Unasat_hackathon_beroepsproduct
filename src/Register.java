@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.Period;
@@ -12,16 +11,35 @@ public class Register {
             System.out.print("Team name: ");
             String teamName = scanner.nextLine().trim();
 
-            System.out.print("Enter 1st person's full name: ");
-            String person1 = scanner.nextLine().trim();
-            String[] names1 = person1.split(" ", 2); // "2" means split the string into 2 parts
-            String firstName1 = names1[0];
-            String lastName1 = names1[1];
+            String firstName1;
+            String lastName1;
+            while (true) {
+                System.out.print("Enter 1st person's full name: ");
+                String person1 = scanner.nextLine().trim();
+                String[] names1 = person1.split(" ", 2); // "2" means split the string into 2 parts
+                firstName1 = names1[0];
+                lastName1 = names1[1];
+
+                PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT naam, achter_naam " +
+                                "FROM student " +
+                                "WHERE EXISTS " +
+                                "(SELECT naam, achter_naam from student WHERE naam = ? AND achter_naam = ?)"
+                );
+                stmt.setString(1, firstName1);
+                stmt.setString(2, lastName1);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println("\u001B[31mPerson already exists\u001B[0m");
+                } else {
+                    break;
+                }
+            }
 
             System.out.print("Student number: ");
             String student_number1 = scanner.next();
 
-            System.out.print("Birth date(2002-04-09): ");
+            System.out.print("Birth date (2002-04-09): ");
             String birth_date1 = scanner.next();
             LocalDate birthdate1 = LocalDate.parse(birth_date1);
             LocalDate current_date = LocalDate.now();
@@ -48,13 +66,33 @@ public class Register {
 
             System.out.print("Residence: ");
             String residence1 = scanner.next();
+            
+            scanner.nextLine();
+            
+            String firstName2;
+            String lastName2;
+            while (true) {
+                System.out.print("Enter 2nd person's full name: ");
+                String person2 = scanner.nextLine().trim();
+                String[] names2 = person2.split(" ", 2); // "2" means split the string into 2 parts
+                firstName2 = names2[0];
+                lastName2 = names2[1];
 
-            System.out.print("Enter 2nd person's full name: ");
-            scanner.nextLine(); // consume the leftover newline character
-            String person2 = scanner.nextLine().trim();
-            String[] names2 = person2.split(" ", 2); // "2" means split the string into 2 parts
-            String firstName2 = names2[0];
-            String lastName2 = names2[1];
+                PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT naam, achter_naam " +
+                                "FROM student " +
+                                "WHERE EXISTS " +
+                                "(SELECT naam, achter_naam from student WHERE naam = ? AND achter_naam = ?)"
+                );
+                stmt.setString(1, firstName2);
+                stmt.setString(2, lastName2);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println("\u001B[31mPerson already exists\u001B[0m");
+                } else {
+                    break;
+                }
+            }
 
             System.out.print("Student number: ");
             String student_number2 = scanner.next();
@@ -98,47 +136,47 @@ public class Register {
 
             String insertContactSql = "INSERT INTO contact_gegevens(contact_nummer, unasat_emailadres, verblijfplaats) values(?,?,?)";
             PreparedStatement insertContactStmt = conn.prepareStatement(insertContactSql, Statement.RETURN_GENERATED_KEYS);
-            insertContactStmt.setInt(1,contact_number1);
+            insertContactStmt.setInt(1, contact_number1);
             insertContactStmt.setString(2, email_adres1);
             insertContactStmt.setString(3, residence1);
             insertContactStmt.executeUpdate();
 
             ResultSet generatedKeysContact = insertContactStmt.getGeneratedKeys();
-            int contactId1 =-1;
-            if(generatedKeysContact.next()){
+            int contactId1 = -1;
+            if (generatedKeysContact.next()) {
                 contactId1 = generatedKeysContact.getInt(1);
             }
 
-            insertContactStmt.setInt(1,contact_number2);
+            insertContactStmt.setInt(1, contact_number2);
             insertContactStmt.setString(2, email_adres2);
             insertContactStmt.setString(3, residence2);
             insertContactStmt.executeUpdate();
 
             generatedKeysContact = insertContactStmt.getGeneratedKeys();
-            int contactId2 =-1;
-            if(generatedKeysContact.next()){
+            int contactId2 = -1;
+            if (generatedKeysContact.next()) {
                 contactId2 = generatedKeysContact.getInt(1);
             }
 
             String insertStudentSql = "INSERT INTO student(naam, achter_naam,studenten_nummer,leeftijd,geboorte_datum,vaardigheid, team_id, contact_id) VALUES(?,?,?,?,?,?,?,?)";
             PreparedStatement insertStudentStmt = conn.prepareStatement(insertStudentSql);
             insertStudentStmt.setString(1, firstName1);
-            insertStudentStmt.setString(2,lastName1);
-            insertStudentStmt.setString(3,student_number1);
+            insertStudentStmt.setString(2, lastName1);
+            insertStudentStmt.setString(3, student_number1);
             insertStudentStmt.setInt(4, age1);
             insertStudentStmt.setDate(5, Date.valueOf(birth_date1));
             insertStudentStmt.setString(6, skill1);
-            insertStudentStmt.setInt(7,teamId);
+            insertStudentStmt.setInt(7, teamId);
             insertStudentStmt.setInt(8, contactId1);
             insertStudentStmt.executeUpdate();
 
             insertStudentStmt.setString(1, firstName2);
-            insertStudentStmt.setString(2,lastName2);
-            insertStudentStmt.setString(3,student_number2);
+            insertStudentStmt.setString(2, lastName2);
+            insertStudentStmt.setString(3, student_number2);
             insertStudentStmt.setInt(4, age2);
             insertStudentStmt.setDate(5, Date.valueOf(birth_date2));
             insertStudentStmt.setString(6, skill2);
-            insertStudentStmt.setInt(7,teamId);
+            insertStudentStmt.setInt(7, teamId);
             insertStudentStmt.setInt(8, contactId2);
             insertStudentStmt.executeUpdate();
 
