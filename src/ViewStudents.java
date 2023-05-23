@@ -1,12 +1,18 @@
-import api.PdfGenerator;
+import databasemanager.DatabaseConnection;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import pdffactory.PdfGenerator;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
 public class ViewStudents {
-    public void View(PDPageContentStream contentStream, PDDocument document) {
+    public void View() throws IOException {
+
+
         Scanner scanner = new Scanner(System.in);
         String choice;
         do {
@@ -23,10 +29,10 @@ public class ViewStudents {
             choice = scanner.nextLine().toLowerCase();
             switch (choice) {
                 case "view teams":
-                    ViewTeams(contentStream,document);
+                    ViewTeams();
                     break;
                 case "search team":
-                    SearchTeamInfo(contentStream, document);
+                    SearchTeamInfo();
                     break;
                 case "return":
                     System.out.println("Returning to menu");
@@ -38,8 +44,13 @@ public class ViewStudents {
         } while (!Objects.equals(choice, "return"));
     }
 
-    public void ViewTeams(PDPageContentStream contentStream, PDDocument document) {
+    public void ViewTeams() {
         try (Connection conn = DatabaseConnection.getConnection()) {
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
             String sql = "SELECT team.team_id, team.team_naam, student.student_id, student.naam, student.achter_naam, contact_gegevens.unasat_emailadres\n" +
                     "FROM team\n" +
                     "LEFT JOIN student ON team.team_id = student.team_id\n" +
@@ -86,13 +97,18 @@ public class ViewStudents {
             } else {
                 System.out.println("Returning to menu");
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
     }
 
 
-    public void SearchTeamInfo(PDPageContentStream contentStream, PDDocument document) {
+    public void SearchTeamInfo() throws IOException {
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage(PDRectangle.A4);
+        document.addPage(page);
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page);
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nEnter team name: ");
         String input = scanner.nextLine();

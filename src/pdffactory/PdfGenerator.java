@@ -1,8 +1,7 @@
-package api;
+package pdffactory;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.awt.*;
@@ -12,11 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PdfGenerator {
-    public static void generatePdfFromCode(PDPageContentStream stream, PDDocument document, List<Map<String, String>> data) {
+    public static void generatePdfFromCode(PDPageContentStream contentStream, PDDocument document, List<Map<String, String>> data) {
         try {
-            // Use the provided stream parameter
-            PDPageContentStream contentStream = stream;
-
             // Add your content to the existing stream
             contentStream.beginText();
             contentStream.setFont(PDType1Font.HELVETICA, 12); // Use a different font (e.g., Helvetica)
@@ -48,7 +44,7 @@ public class PdfGenerator {
 
                 // Display the member information
                 contentStream.showText("ID: " + row.get("studentid") + ", Name: " + row.get("first") + " " + row.get("last") + ", E-mailadres: " + row.get("email"));
-                contentStream.newLineAtOffset(0, -38 ); // Add vertical spacing between members
+                contentStream.newLineAtOffset(0, -38); // Add vertical spacing between members
 
                 // Repeat for other members
 
@@ -56,17 +52,26 @@ public class PdfGenerator {
             }
 
             contentStream.close();
+            int version = 1;
+            boolean is_done = false;
+            String filePath = null;
+            while (!is_done) {
+                filePath = "C:\\Users\\mento\\OneDrive\\Desktop\\pdf\\fileV" + version + ".pdf";
 
-            String filePath = "C:\\Users\\mento\\OneDrive\\Desktop\\pdf\\file.pdf";
-            // Save and close the document outside the method
-            document.save(filePath);
-            document.close();
-            System.out.println("PDF created successfully in directory C:\\Users\\mento\\OneDrive\\Desktop\\pdf\\");
+                // Save and close the document outside the loop
+                document.save(filePath);
+                document.close();
 
-            // Open the generated PDF
-            File file = new File(filePath);
-            if (file.exists()) {
-                Desktop.getDesktop().open(file);
+                System.out.println("PDF created successfully in directory C:\\Users\\mento\\OneDrive\\Desktop\\pdf\\");
+
+                // Open the generated PDF
+                File file = new File(filePath);
+                if (file.exists()) {
+                    Desktop.getDesktop().open(file);
+                }
+
+                version = version + 1; // Increment the version number
+                is_done = true; // Set the flag to exit the loop
             }
         } catch (IOException e) {
             e.printStackTrace();
