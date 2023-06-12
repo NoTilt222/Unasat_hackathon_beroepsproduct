@@ -28,18 +28,10 @@ public class ViewStudents {
             System.out.println();
             choice = scanner.nextLine().toLowerCase();
             switch (choice) {
-                case "view teams":
-                    ViewTeams();
-                    break;
-                case "search team":
-                    SearchTeamInfo();
-                    break;
-                case "return":
-                    System.out.println("Returning to menu");
-                    break;
-                default:
-                    System.out.println("Invalid choice.");
-                    break;
+                case "view teams" -> ViewTeams();
+                case "search team" -> SearchTeamInfo();
+                case "return" -> System.out.println("Returning to menu");
+                default -> System.out.println("\u001B[31mInvalid choice!\u001B[0m");
             }
         } while (!Objects.equals(choice, "return"));
     }
@@ -83,6 +75,7 @@ public class ViewStudents {
                 row.put("first", first);
                 row.put("last", last);
                 row.put("email", email);
+                row.put("option", "0");
                 data.add(row);
             }
             rs.close();
@@ -110,7 +103,7 @@ public class ViewStudents {
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\nEnter team name: ");
+        System.out.println("\033[38;5;32m" + "Enter team name: " + "\033[0m");
         String input = scanner.nextLine();
 
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -158,6 +151,7 @@ public class ViewStudents {
                 row.put("skill", skill);
                 row.put("contact", String.valueOf(contact));
                 row.put("residence", residence);
+                row.put("option", "1");
                 data.add(row);
             }
             rs.close();

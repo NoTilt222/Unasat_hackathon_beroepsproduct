@@ -1,10 +1,5 @@
-    import databasemanager.DatabaseConnection;
-    import org.apache.pdfbox.pdmodel.PDDocument;
-    import org.apache.pdfbox.pdmodel.PDPage;
-    import org.apache.pdfbox.pdmodel.PDPageContentStream;
-    import org.apache.pdfbox.pdmodel.common.PDRectangle;
-
     import java.io.IOException;
+    import java.sql.SQLException;
     import java.util.Scanner;
     import java.util.Objects;
 
@@ -13,9 +8,8 @@
         static Register register = new Register();
         static Update update = new Update();
         static Delete delete = new Delete();
-        static DatabaseConnection connection = new DatabaseConnection();
 
-        public static void main(String[] args) throws IOException {
+        public static void main(String[] args) throws IOException, SQLException {
             System.out.println("\u001B[38;5;208m" + "Welcome to UNASAT HACKATHON");
             System.out.print("\033[0m");
             Scanner scanner = new Scanner(System.in);
@@ -39,7 +33,7 @@
                 choice = scanner.next().toLowerCase();
                 switch (choice) {
                     case "view" -> view.View(); // Pass the contentStream as an argument
-                    case "register" -> register.RegisterTeam();
+                    case "register" -> register.RegisterTeams();
                     case "update" -> update.UpdateInformation();
                     case "delete" -> delete.DeleteInformation();
                     case "exit" -> {
@@ -55,7 +49,7 @@
                         System.out.println();
                         System.exit(0);
                     }
-                    default -> System.out.println("Invalid choice!");
+                    default -> System.out.println("\u001B[31mInvalid choice!\u001B[0m");
                 }
             } while (!Objects.equals(choice, "exit"));
         }
